@@ -71,7 +71,7 @@
       <div class="blob blob-b"></div>
     </div>
     <div class="relative mx-auto max-w-7xl px-4 pt-14 pb-24 text-center">
-      <img src="mainphoto3.png"
+      <img src="mainphoto4.png"
      alt="Blackout Garage Business Card"
      class="w-[500px] mx-auto rounded-lg shadow-[0_0_40px_rgba(56,189,248,0.35)] opacity-95 mix-blend-lighten transition-all duration-500 hover:opacity-100">
 <div class="mt-6 w-full max-w-3xl mx-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
@@ -206,14 +206,15 @@
     </section>
   </main>
 
-  <!-- FOOTER -->
+<!-- FOOTER -->
   <footer class="border-t border-white/10 mt-10">
     <div class="mx-auto max-w-7xl px-4 py-8 text-sm text-gray-400 flex flex-col sm:flex-row items-center justify-between gap-4">
-<div class="h-8 w-24 bg-zinc-800 border border-white/10 rounded-md flex items-center justify-center text-gray-500 text-xs">Logo</div>
-</div>
+      <div class="flex items-center gap-3">
+        <img src="/logo-blackout-garage.png" alt="Blackout Garage Logo" class="h-8 w-auto object-contain opacity-90">
         <p>© <span id="year"></span> Blackout Garage. All rights reserved.</p>
       </div>
       <div class="flex gap-6">
+        <a href="#services" class="hover:text-white">Services</a>
         <a href="#pricing" class="hover:text-white">Packages</a>
         <a href="#faq" class="hover:text-white">FAQ</a>
         <a href="#contact" class="hover:text-white">Contact</a>
@@ -222,8 +223,39 @@
   </footer>
 
   <script>
+    // Init lucide icons
     lucide.createIcons();
+
+    // Theme toggle (dark only by default; toggles body class)
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn?.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Gallery upload handling
+    const uploader = document.getElementById('uploader');
+    const grid = document.getElementById('galleryGrid');
+    const empty = document.getElementById('galleryEmpty');
+
+    uploader.addEventListener('change', (e) => {
+      const files = e.target.files;
+      if (!files || !files.length) return;
+      const list = Array.from(files).slice(0, 24);
+      Promise.all(list.map(f => new Promise((resolve) => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(f); })))
+        .then(urls => {
+          urls.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = 'Gallery photo';
+            img.className = 'w-full rounded-xl border border-white/10 avoid-break mb-3';
+            grid.appendChild(img);
+          });
+          empty.style.display = 'none';
+        });
+    });
   </script>
 </body>
 </html>
