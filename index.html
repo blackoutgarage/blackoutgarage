@@ -38,6 +38,22 @@
     @keyframes pulse { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.03); } }
     .gridlines { background-image: linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px); background-size: 24px 24px; }
     .avoid-break { break-inside: avoid; }
+
+    /* =====================
+       HARDENING (no layout change, same filenames)
+       ===================== */
+    /* Block native dragging/selecting and long-press save on images */
+    img, picture, svg, canvas, video {
+      -webkit-user-drag: none;   /* Safari/Chrome drag ghost */
+      user-drag: none;
+      -webkit-user-select: none; /* Prevent selecting */
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none; /* iOS long-press menu */
+      touch-action: manipulation;   /* reduce gesture triggers */
+    }
+    /* Keep text selectable elsewhere */
   </style>
 </head>
 <body class="bg-gradient-to-b from-zinc-950 via-black to-zinc-950 text-white selection:bg-sky-500/30">
@@ -46,7 +62,7 @@
  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#101820]/80 border-b border-white/10">
     <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
       <a href="#top" class="flex items-center gap-3">
-        <img src="logo2.png" alt="Blackout Garage Logo" class="h-10 w-auto object-contain drop-shadow-[0_6px_20px_rgba(0,173,239,0.45)]">
+        <img src="logo2.png" alt="Blackout Garage Logo" class="h-10 w-auto object-contain drop-shadow-[0_6px_20px_rgba(0,173,239,0.45)]" draggable="false">
         <div class="leading-tight hidden sm:block">
           <p class="font-extrabold tracking-tight text-xl">BLACKOUT GARAGE</p>
           <p class="text-xs text-sky-400 -mt-0.5">Automotive Window Tinting</p>
@@ -73,7 +89,7 @@
     <div class="relative mx-auto max-w-7xl px-4 pt-14 pb-24 text-center">
 <img src="mainphoto2.png"
      alt="Blackout Garage Business Card"
-     class="w-full max-w-3xl mx-auto rounded-lg shadow-[0_0_40px_rgba(56,189,248,0.35)] opacity-70 mix-blend-lighten transition-all duration-500 hover:opacity-100" />
+     class="w-full max-w-3xl mx-auto rounded-lg shadow-[0_0_40px_rgba(56,189,248,0.35)] opacity-70 mix-blend-lighten transition-all duration-500 hover:opacity-100" draggable="false" />
 
 <div class="mt-6 w-full max-w-3xl mx-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
   <div class="grid sm:grid-cols-3 gap-4 p-4 md:p-5 text-sm text-center">
@@ -152,22 +168,22 @@
   <h2 class="text-3xl font-bold mb-6">Gallery</h2>
   <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
     <img src="pic1.PNG" alt="Tinted car example 1"
-         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" />
+         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" draggable="false" />
     
     <img src="pic2.PNG" alt="Tinted car example 2"
-         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" />
+         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" draggable="false" />
     
     <img src="pic3.PNG" alt="Tinted car example 3"
-         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" />
+         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" draggable="false" />
     
     <img src="gallery4.jpg" alt="Tinted car example 4"
-         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" />
+         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" draggable="false" />
     
     <img src="gallery5.jpg" alt="Tinted car example 5"
-         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" />
+         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" draggable="false" />
     
     <img src="gallery6.jpg" alt="Tinted car example 6"
-         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" />
+         class="w-full aspect-[4/3] object-cover rounded-xl border border-white/10 hover:opacity-90 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition" draggable="false" />
   </div>
 </section>
 
@@ -250,27 +266,55 @@
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Gallery upload handling
+    // HARDENING JS — blocks drag, right-click, and long-press on images without changing layout
+    (function hardenImages(){
+      const protect = (el) => {
+        if (!el) return;
+        el.setAttribute('draggable','false');
+        el.addEventListener('dragstart', (e) => e.preventDefault());
+        el.addEventListener('mousedown', (e) => e.preventDefault(), {passive:false});
+        el.addEventListener('contextmenu', (e) => e.preventDefault());
+        ['touchstart','touchend','touchcancel','gesturestart'].forEach(evt => {
+          el.addEventListener(evt, (e) => e.preventDefault(), {passive:false});
+        });
+      };
+
+      // existing images
+      document.querySelectorAll('img').forEach(protect);
+
+      // in case images are added later (e.g., uploader or dynamic content)
+      const mo = new MutationObserver((muts) => {
+        muts.forEach(m => m.addedNodes.forEach(n => {
+          if (n.tagName === 'IMG') protect(n);
+          if (n.querySelectorAll) n.querySelectorAll('img').forEach(protect);
+        }));
+      });
+      mo.observe(document.documentElement, {childList: true, subtree: true});
+    })();
+
+    // Gallery upload handling (left as-is; hardened via MutationObserver above)
     const uploader = document.getElementById('uploader');
     const grid = document.getElementById('galleryGrid');
     const empty = document.getElementById('galleryEmpty');
 
-    uploader.addEventListener('change', (e) => {
-      const files = e.target.files;
-      if (!files || !files.length) return;
-      const list = Array.from(files).slice(0, 24);
-      Promise.all(list.map(f => new Promise((resolve) => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(f); })))
-        .then(urls => {
-          urls.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url;
-            img.alt = 'Gallery photo';
-            img.className = 'w-full rounded-xl border border-white/10 avoid-break mb-3';
-            grid.appendChild(img);
+    if (uploader) {
+      uploader.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (!files || !files.length) return;
+        const list = Array.from(files).slice(0, 24);
+        Promise.all(list.map(f => new Promise((resolve) => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(f); })))
+          .then(urls => {
+            urls.forEach(url => {
+              const img = document.createElement('img');
+              img.src = url;
+              img.alt = 'Gallery photo';
+              img.className = 'w-full rounded-xl border border-white/10 avoid-break mb-3';
+              grid.appendChild(img);
+            });
+            if (empty) empty.style.display = 'none';
           });
-          empty.style.display = 'none';
-        });
-    });
+      });
+    }
   </script>
 </body>
 </html>
